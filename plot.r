@@ -67,5 +67,5 @@ ggplot(myData) +
     ggtitle("Subtasks for each project created") +
     labs(x="Project Creation Month", y="Number of subtasks") +
     theme(axis.text.x = element_text(angle = 90)) +
-    theme(axis.title.y = element_text(vjust=0.5)) +
+    theme(axis.title.y = element_text(vjust=0.5, hjust=0.55)) +
     theme(axis.title.x = element_text(vjust=-0.1))
