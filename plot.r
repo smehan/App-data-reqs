@@ -27,10 +27,10 @@ myData[myData == ""] <- NA
 myData[myData == " "] <- NA # there are still some rows ending with an extra space
 
 # Convert dates to posix date objects
-myData$Created <- dmy_hm(myData$Created)
-myData$Updated <- dmy_hm(myData$Updated)
-myData$Resolved <- dmy_hm(myData$Resolved)
-myData$Date.of.First.Response <- dmy_hm(myData$Date.of.First.Response)
+myData$Created <- mdy_hm(myData$Created)
+myData$Updated <- mdy_hm(myData$Updated)
+myData$Resolved <- mdy_hm(myData$Resolved)
+myData$Date.of.First.Response <- mdy_hm(myData$Date.of.First.Response)
 
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
@@ -52,7 +52,9 @@ myData$month_resolved <- month(myData$Resolved, label = TRUE)
 myData$month_num_resolved <- month(myData$Resolved)
 
 # Calendar duration of request
-    
+
+myData$project_duration <- (myData$Resolved - myData$Created)
+
 ***********************************************************
 *** Create some plots
 ***********************************************************
