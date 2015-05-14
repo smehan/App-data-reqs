@@ -19,8 +19,8 @@ library(lubridate)
 *** Perform some pre-processing tasks.
 ***********************************************************
     
-myData <- read.csv2("App-data-reqs.csv", header=TRUE, sep = ",")
-myData <- rownames[myData$Key]
+myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stringsAsFactors = TRUE)
+rownames(myData) <- myData$Key
 
 # Convert empty values to NA
 
