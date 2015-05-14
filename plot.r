@@ -23,8 +23,14 @@ myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stri
 rownames(myData) <- myData$Key
 
 # Convert empty values to NA
+myData[myData == ""] <- NA
+myData[myData == " "] <- NA # there are still some rows ending with an extra space
 
 # Convert dates to posix date objects
+myData$Created <- dmy_hm(myData$Created)
+myData$Updated <- dmy_hm(myData$Updated)
+myData$Resolved <- dmy_hm(myData$Resolved)
+myData$Date.of.First.Response <- dmy_hm(myData$Date.of.First.Response)
 
 ***********************************************************
 *** Create calculated values
