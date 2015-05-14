@@ -1,9 +1,9 @@
-***********************************************************
+###########################################################
     Plot.r is a class that reads in a cleaned csv from source
     data and performs some pre-processing. It then creates 
     some plots mainly slicing on Assignee, Calendar duration,
     created year and month (which are calculated values)
-***********************************************************
+###########################################################
 library(ggplot2)
 library(scales)
 library(ggthemes)
@@ -13,11 +13,11 @@ library(stringr)
 library(reshape2)
 library(lubridate)
 
-***********************************************************
-*** Read in CSV into a df. Assumes that records are single rows
-*** and that file has been cleansed with a :%s/^V^M/\r/g
-*** Perform some pre-processing tasks.
-***********************************************************
+###########################################################
+### Read in CSV into a df. Assumes that records are single rows
+### and that file has been cleansed with a :%s/^V^M/\r/g
+### Perform some pre-processing tasks.
+###########################################################
     
 myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stringsAsFactors = TRUE)
 rownames(myData) <- myData$Key
@@ -35,9 +35,9 @@ myData$Date.of.First.Response <- mdy_hm(myData$Date.of.First.Response)
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 
-***********************************************************
-*** Create calculated values
-***********************************************************
+###########################################################
+### Create calculated values
+###########################################################
 
 # Year request created into year and month, with a numerical and text month
 
@@ -55,9 +55,9 @@ myData$month_num_resolved <- month(myData$Resolved)
 
 myData$project_duration <- (myData$Resolved - myData$Created)
 
-***********************************************************
-*** Create some plots
-***********************************************************
+###########################################################
+### Create some plots
+###########################################################
 
 ggplot(myData) +
     aes(x=month_created, y=X..of.Sub.Tasks) +
