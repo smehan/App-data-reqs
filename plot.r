@@ -59,3 +59,13 @@ myData$project_duration <- (myData$Resolved - myData$Created)
 *** Create some plots
 ***********************************************************
 
+ggplot(myData) +
+    aes(x=month_created, y=X..of.Sub.Tasks) +
+    geom_point() +
+    facet_wrap(~year_created) +
+    theme_stata() +
+    ggtitle("Subtasks for each project created") +
+    labs(x="Project Creation Month", y="Number of subtasks") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    theme(axis.title.y = element_text(vjust=0.5)) +
+    theme(axis.title.x = element_text(vjust=-0.1))
