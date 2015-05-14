@@ -41,8 +41,19 @@ myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 
 # Year request created into year and month, with a numerical and text month
 
+myData$year_created <- year(myData$Created)
+myData$month_created <- month(myData$Created, label = TRUE)
+myData$month_num_created <- month(myData$Created)
+myData$year_updated <- year(myData$Updated)
+myData$month_updated <- month(myData$Updated, label = TRUE)
+myData$month_num_updated <- month(myData$Updated)
+myData$year_resolved <- year(myData$Resolved)
+myData$month_resolved <- month(myData$Resolved, label = TRUE)
+myData$month_num_resolved <- month(myData$Resolved)
+
 # Calendar duration of request
     
 ***********************************************************
 *** Create some plots
 ***********************************************************
+
