@@ -9,5 +9,7 @@
 vignettes/*.html
 vignettes/*.pdf
 .Rproj.user
+<<<<<<< HEAD
 # Data directory
 data/
+=======
