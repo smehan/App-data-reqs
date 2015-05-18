@@ -19,7 +19,8 @@ library(lubridate)
 ### Perform some pre-processing tasks.
 ###########################################################
     
-myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stringsAsFactors = TRUE)
+myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stringsAsFactors = TRUE,
+                    as.is = c("Summary", "Description","Created", "Updated", "Resolved","Date.of.First.Response"))
 rownames(myData) <- myData$Key
 
 # Convert empty values to NA
@@ -67,5 +68,23 @@ ggplot(myData) +
     ggtitle("Subtasks for each project created") +
     labs(x="Project Creation Month", y="Number of subtasks") +
     theme(axis.text.x = element_text(angle = 90)) +
-    theme(axis.title.y = element_text(vjust=0.5, hjust=0.55)) +
-    theme(axis.title.x = element_text(vjust=-0.1))
+    theme(axis.title.y = element_text(vjust=0.5)) +
+    theme(axis.title.x = element_text(vjust=-0.1)) +
+    theme(plot.title = element_text(size=20, face="bold", vjust=2))
+
+# change the level attributes for plot purposes
+# this is kind of clunky but I haven't found a better way to do this on the fly.
+levels(x=myData$Assignee)<-c("DW", "ER", "MR", "TMAY", "NONE")
+ggplot(myData) +
+    aes(myData$X..of.Sub.Tasks) +
+    geom_histogram(fill="firebrick") +
+    facet_grid(Assignee~year_created) +
+    theme_stata() +
+    ggtitle("Subtasks per assignee per year created") +
+    labs(x="Subtasks", y="Frequency") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    theme(axis.title.y = element_text(vjust=0.5)) +
+    theme(axis.title.x = element_text(vjust=-0.1)) +
+    theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
+    theme(strip.text.y = element_text(colour = "red", angle = 45, size = 10,
+                                      hjust = 0.5, vjust = 0.5))
