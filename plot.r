@@ -14,7 +14,7 @@ library(reshape2)
 library(lubridate)
 
 ###########################################################
-### Read in CSV into a df. Assumes that records are single rows
+### Read CSV into a df. Assumes that records are single rows
 ### and that file has been cleansed with a :%s/^V^M/\r/g
 ### Perform some pre-processing tasks.
 ###########################################################
@@ -55,6 +55,12 @@ myData$month_num_resolved <- month(myData$Resolved)
 # Calendar duration of request
 
 myData$project_duration <- (myData$Resolved - myData$Created)
+
+###########################################################
+### Finally, serialize the data frame for use in other scripts
+###########################################################
+
+saveRDS(myData, "data/App_Data_Reqs.rds")
 
 ###########################################################
 ### Create some plots
