@@ -54,14 +54,13 @@ myData$month_num_resolved <- month(myData$Resolved)
 
 # Calendar duration of request
 
-myData$project_duration <- (myData$Resolved - myData$Created)
+myData$project_duration <- round((myData$Resolved - myData$Created), 3)
 
 ###########################################################
 ### Finally, serialize the data frame for use in other scripts
 ###########################################################
 
 saveRDS(myData, "data/App_Data_Reqs.rds")
-
 ###########################################################
 ### Create some plots
 ###########################################################
