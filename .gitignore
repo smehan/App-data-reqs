@@ -13,3 +13,4 @@ vignettes/*.pdf
 # Data directory
 data/
 .RData
+.DS_Store
