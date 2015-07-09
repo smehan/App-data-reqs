@@ -10,8 +10,8 @@ with open('./data/AppDataRequest2010-2015.tsv', 'rb') as csvfile:
     testwriter = csv.writer(testfile, delimiter='\t')
     count = 0
     for row in records:
-        for e in row: #TODO still need to remove \n from list elements
-            e = re.sub(r'\n','',e)
+        for i, s in enumerate(row):
+            row[i] = re.sub(r'\n+', '', s)
         testwriter.writerow(row)
         count += 1
     # for row in records:
