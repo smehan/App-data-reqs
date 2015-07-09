@@ -1,8 +1,8 @@
 ###########################################################
-    Plot.r is a class that reads in a cleaned csv from source
-    data and performs some pre-processing. It then creates 
-    some plots mainly slicing on Assignee, Calendar duration,
-    created year and month (which are calculated values)
+###    Plot.r is a class that reads in a cleaned csv from source
+###    data and performs some processing. It then creates 
+###    some plots mainly slicing on Assignee, Calendar duration,
+###    created year and month (which are calculated values)
 ###########################################################
 library(ggplot2)
 library(scales)
@@ -19,7 +19,7 @@ library(lubridate)
 ### Perform some pre-processing tasks.
 ###########################################################
     
-myData <- read.csv2("data/AppDataReq2010-2014.csv", header=TRUE, sep = ",", stringsAsFactors = TRUE,
+myData <- read.csv2("data/AppDataRequest2010-2015-clean.tsv", header=TRUE, sep = "\t", stringsAsFactors = TRUE,
                     as.is = c("Summary", "Description","Created", "Updated", "Resolved","Date.of.First.Response"))
 rownames(myData) <- myData$Key
 

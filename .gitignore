@@ -14,3 +14,4 @@ vignettes/*.pdf
 data/
 .RData
 .DS_Store
+.idea
