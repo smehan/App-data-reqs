@@ -45,9 +45,10 @@ myData$Created <- mdy_hm(myData$Created)
 myData$Updated <- mdy_hm(myData$Updated)
 myData$Resolved <- mdy_hm(myData$Resolved)
 myData$Date.of.First.Response <- mdy_hm(myData$Date.of.First.Response)
-for (i in 51:100){
-    myData[ ,i] <- mdy(myData[ ,i])
-}
+
+# Reduce vector noise by removing noise text
+myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
+
 ###########################################################
 ### Create calculated values
 ###########################################################
