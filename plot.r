@@ -18,14 +18,27 @@ library(lubridate)
 ### and that file has been cleansed with a :%s/^V^M/\r/g
 ### Perform some pre-processing tasks.
 ###########################################################
-    
+
+# First need to clean up Approver Names as it is such a long list, and needs to be
+# added to as.is in read.csv2
+
+approverNames <- "Preston Allen Start     Preston Allen End       Donna Amos Start        Donna Amos End  Alison Beug Start       Alison Beug End Martin Bragg Start      Martin Bragg End        Kacey Chun Start        Kacey Chun End  Anthony Colvard Start   Anthony Colvard End     Margie Coolidge Start   Margie Coolidge End     Beth Gallagher Start    Beth Gallagher End      Kimi Ikeda Start        Kimi Ikeda End  Al Liddicoat Start      Al Liddicoat End
+        John Lyons Start        John Lyons End  Nelda Olvera Start      Nelda Olvera End        Jim Maraviglia Start    Jim Maraviglia End      Barbara Martinez Start  Barbara Martinez End    Theresa May Start       Theresa May End Craig Nelson Start      Craig Nelson End        Dave Ross Start Dave Ross End   Lori Serna Start        Lori Serna End  Mary Shaffer Start      Mary Shaffer End        Sharif Sharifi Start    Sharif Sharifi End      Craig Schultz Start     Craig Schultz  End      Patricia Stoneman Start Patricia Stoneman End   Mike Suess Start        Mike Suess End  Cem Sunata Start        Cem Sunata End  Terry Vahey Start       Terry Vahey End Joanne Williams Start   Joanne Williams End     June Serjeant Start     June Serjeant End       Lorlie Leetham Start    Lorlie Leetham End      Eumi Sprague Start      Eumi Sprague End        Trey Duffy Start        Trey Duffy End  Shannon Stephens Start  Shannon Stephens End    Susan Tripp Start       Susan Tripp End Stacey Breitenbach Start        Stacey Breitenbach End  Susan Sparling Start    Susan Sparling End      Sema Alptekin Start     Sema Alptekin End       Victor Brancart Start   Victor Brancart End     Philip Davis Start      Philip Davis End        Ryan Matteson Start     Ryan Matteson End       Melinda Rojo Start      Melinda Rojo End        Joyce Haratani Start    Joyce Haratani End      Marc Benadiba Start     Marc Benadiba End       Carter-Hammett McGarry Start    Carter-Hammett McGarry End      Joanne Mead Start       Joanne Mead End Cassie Carter Start     Cassie Carter End       Denise Gibbons Start    Denise Gibbons End
+"
+approverNames <- str_replace_all(names, "(Start\\b)\\s+(\\b\\w+)", "\\1, \\2")
+approverNames <- str_replace_all(names, "(End\\b)\\s+(\\b\\w+)", "\\1, \\2")
+approverNamesList <- str_split(approverNames, ", ")
+
+# now lets build the as.is list of columns including the approverNames
+
 myData <- read.csv2("data/AppDataRequest2010-2015-clean.tsv", header=TRUE, sep = "\t", stringsAsFactors = TRUE,
-                    as.is = c("Summary", "Description","Created", "Updated", "Resolved","Date.of.First.Response"))
+                    as.is = c("Summary", "Description","Created", "Updated","Resolved","Date.of.First.Response"))
 rownames(myData) <- myData$Key
 
 # Convert empty values to NA
 myData[myData == ""] <- NA
 myData[myData == " "] <- NA # there are still some rows ending with an extra space
+
 
 # Convert dates to posix date objects
 myData$Created <- mdy_hm(myData$Created)
@@ -36,6 +49,9 @@ myData$Date.of.First.Response <- mdy_hm(myData$Date.of.First.Response)
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 
+for (i in 51:100){
+    myData[ ,i] <- mdy(myData[ ,i])
+}
 ###########################################################
 ### Create calculated values
 ###########################################################
@@ -55,6 +71,13 @@ myData$month_num_resolved <- month(myData$Resolved)
 # Calendar duration of request
 
 myData$project_duration <- round((myData$Resolved - myData$Created), 3)
+
+# First stab at approval duration
+
+for (i in seq(51,100,2)){
+    duration <- (myData[ ,i+1] - myData[ ,i])
+}
+myData$approval_duration
 
 ###########################################################
 ### Finally, serialize the data frame for use in other scripts
