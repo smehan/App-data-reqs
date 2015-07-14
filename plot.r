@@ -27,12 +27,12 @@ approverNames <- "Preston Allen Start     Preston Allen End       Donna Amos Sta
 "
 approverNames <- str_replace_all(approverNames, "(Start\\b)\\s+(\\b\\w+)", "\\1, \\2")
 approverNames <- str_replace_all(approverNames, "(End\\b)\\s+(\\b\\w+)", "\\1, \\2")
-approverNamesList <- str_split(approverNames, ", ")
+approverNamesVec <- unlist(str_split(approverNames, ", "))
 
 # now lets build the as.is list of columns including the approverNames
 
 myData <- read.csv2("data/AppDataRequest2010-2015-clean.tsv", header=TRUE, sep = "\t", stringsAsFactors = TRUE,
-                    as.is = c("Summary", "Description","Created", "Updated","Resolved","Date.of.First.Response"))
+                    as.is = c("Summary", "Description"))
 rownames(myData) <- myData$Key
 
 # Convert empty values to NA
@@ -45,6 +45,12 @@ myData$Created <- mdy_hm(myData$Created)
 myData$Updated <- mdy_hm(myData$Updated)
 myData$Resolved <- mdy_hm(myData$Resolved)
 myData$Date.of.First.Response <- mdy_hm(myData$Date.of.First.Response)
+myData$Due.Date <- mdy(myData$Due.Date)
+
+# need indicies for approver Columns and then convert them to date objects
+approverCols <- grep('\\.Start$|\\.End$', names(myData))
+myData[approverCols] <- lapply(myData[approverCols], mdy)
+
 
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
@@ -70,10 +76,12 @@ myData$month_num_resolved <- month(myData$Resolved)
 myData$project_duration <- round((myData$Resolved - myData$Created), 3)
 
 # First stab at approval duration
+duration = ""
 
-for (i in seq(51,100,2)){
-    duration <- (myData[ ,i+1] - myData[ ,i])
+for(i in trycols){
+    duration[i-62] <- (myData[i+1] - myData[i])
 }
+
 myData$approval_duration
 
 ###########################################################
