@@ -1,5 +1,5 @@
 ###########################################################
-###    Plot.r is a class that reads in a cleaned csv from source
+###    Load.R is a class that reads in a cleaned csv from source
 ###    data and performs some processing. It then creates 
 ###    some plots mainly slicing on Assignee, Calendar duration,
 ###    created year and month (which are calculated values)
