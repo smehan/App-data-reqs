@@ -39,7 +39,6 @@ rownames(myData) <- myData$Key
 myData[myData == ""] <- NA
 myData[myData == " "] <- NA # there are still some rows ending with an extra space
 
-
 # Convert dates to posix date objects
 myData$Created <- mdy_hm(myData$Created)
 myData$Updated <- mdy_hm(myData$Updated)
@@ -51,7 +50,6 @@ myData$Due.Date <- mdy(myData$Due.Date)
 approverCols <- grep('\\.Start$|\\.End$', names(myData))
 myData[approverCols] <- lapply(myData[approverCols], mdy)
 
-
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 
@@ -60,7 +58,6 @@ myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 ###########################################################
 
 # Year request created into year and month, with a numerical and text month
-
 myData$year_created <- year(myData$Created)
 myData$month_created <- month(myData$Created, label = TRUE)
 myData$month_num_created <- month(myData$Created)
@@ -72,17 +69,7 @@ myData$month_resolved <- month(myData$Resolved, label = TRUE)
 myData$month_num_resolved <- month(myData$Resolved)
 
 # Calendar duration of request
-
 myData$project_duration <- round((myData$Resolved - myData$Created), 3)
-
-# First stab at approval duration
-duration = ""
-
-for(i in trycols){
-    duration[i-62] <- (myData[i+1] - myData[i])
-}
-
-myData$approval_duration
 
 ###########################################################
 ### Finally, serialize the data frame for use in other scripts
