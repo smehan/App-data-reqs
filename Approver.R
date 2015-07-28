@@ -5,7 +5,7 @@
 ###########################################################
 
 # First read in data set
-readRDS(file="data/App_Data_Reqs.rds")
+myData <- readRDS(file="data/App_Data_Reqs.rds")
 
 # some scratch
 trial <- data.frame(id = factor(1:4), 
