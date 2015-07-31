@@ -18,19 +18,87 @@ myData <- readRDS(file="data/App_Data_Reqs.rds")
 dups <- anyDuplicated(approverDF$Key)
 approverDF <- approverDF[-dups, ]
 
+# CONSTANT used to convert time deltas to days
+SECINDAY <- (60*60*24)
+
+# Subset out everything not an approval task
+## TODO haven't taken care of three bad rows of times yet!, so they are lost next function
+
+myData <- myData[grep("Get Approval", myData$Summary, perl = TRUE), ]
+
 # Create the approver DF as a subset of myData
 approverDF <- data.frame(Key = factor(myData$Key),
-                 Project = myData$Project,
                  Creator = myData$Creator,
-                 Assignee = myData$Assignee)
+                 Assignee = myData$Assignee,
+                 Created = myData$Created,
+                 Resolved = myData$Resolved,
+                 # Issue.Type = myData$Issue.Type,
+                 Date.of.First.Response = myData$Date.of.First.Response,
+                 PA.AT = as.integer(myData$Preston.Allen.End - myData$Preston.Allen.Start)/(SECINDAY),
+                 DA.AT = as.integer(myData$Donna.Amos.End - myData$Donna.Amos.Start)/(SECINDAY),
+                 AB.AT = as.integer(myData$Alison.Beug.End - myData$Alison.Beug.Start)/(SECINDAY),
+                 MB.AT = as.integer(myData$Martin.Bragg.End - myData$Martin.Bragg.End)/(SECINDAY),
+                 KC.AT = as.integer(myData$Kacey.Chun.End - myData$Kacey.Chun.Start)/(SECINDAY),
+                 AC.AT = as.integer(myData$Anthony.Colvard.End - myData$Anthony.Colvard.Start)/(SECINDAY),
+                 MC.AT = as.integer(myData$Margie.Coolidge.End - myData$Margie.Coolidge.Start)/(SECINDAY),
+                 BG.AT = as.integer(myData$Beth.Gallagher.End - myData$Beth.Gallagher.Start)/(SECINDAY),
+                 KI.AT = as.integer(myData$Kimi.Ikeda.End - myData$Kimi.Ikeda.Start)/(SECINDAY),
+                 AL.AT = as.integer(myData$Al.Liddicoat.End - myData$Al.Liddicoat.Start)/(SECINDAY),
+                 JL.AT = as.integer(myData$John.Lyons.End - myData$John.Lyons.Start)/(SECINDAY),
+                 NO.AT = as.integer(myData$Nelda.Olvera.End - myData$Nelda.Olvera.Start)/(SECINDAY),
+                 JM.AT = as.integer(myData$Jim.Maraviglia.End - myData$Jim.Maraviglia.Start)/(SECINDAY),
+                 BM.AT = as.integer(myData$Barbara.Martinez.End - myData$Barbara.Martinez.Start)/(SECINDAY),
+                 TM.AT = as.integer(myData$Theresa.May.End - myData$Theresa.May.Start)/(SECINDAY),
+                 CN.AT = as.integer(myData$Craig.Nelson.End - myData$Craig.Nelson.Start)/(SECINDAY),
+                 DR.AT = as.integer(myData$Dave.Ross.End - myData$Dave.Ross.Start)/(SECINDAY),
+                 LS.AT = as.integer(myData$Lori.Serna.End - myData$Lori.Serna.Start)/(SECINDAY),
+                 MS.AT = as.integer(myData$Mary.Shaffer.End - myData$Mary.Shaffer.Start)/(SECINDAY),
+                 SS.AT = as.integer(myData$Sharif.Sharifi.End - myData$Sharif.Sharifi.Start)/(SECINDAY),
+                 CS.AT = as.integer(myData$Craig.Schultz..End - myData$Craig.Schultz.Start)/(SECINDAY),
+                 PS.AT = as.integer(myData$Patricia.Stoneman.End - myData$Patricia.Stoneman.Start)/(SECINDAY),
+                 SUESS.AT = as.integer(myData$Mike.Suess.End - myData$Mike.Suess.Start)/(SECINDAY),
+                 CEM.AT = as.integer(myData$Cem.Sunata.End - myData$Cem.Sunata.Start)/(SECINDAY),
+                 TV.AT = as.integer(myData$Terry.Vahey.End - myData$Terry.Vahey.Start)/(SECINDAY))
+
+# TODO Clean up the small times
+# TODO Calculate the longest interval and call that the approval duration
+# TODO Remove timestamps hhmm and move everything that shows as 0 days to be .5 days
 
 # convert to long form
 approverDF <- melt(approverDF, 
+#                    id.vars = c("Key, Creator, Assignee"), #TODO melt chokes on Creator,Assignee
                    id.vars = c("Key"),
-                   measured.vars = c("Project, Creator, Assignee"),
+                   measured.vars = c("Created, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT"),
                    na.rm = TRUE,
                    variable.name = "stuff",
                    value.name = "values",
                    factorsAsStrings = T)
 
 
+##########################################################
+### Add some plots
+##########################################################
+# ggplot(myData) +
+#     aes(myData$X..of.Sub.Tasks) +
+#     geom_histogram(fill="firebrick") +
+#     facet_grid(Assignee~year_created) +
+#     theme_stata() +
+#     ggtitle("Subtasks per assignee per year created") +
+#     labs(x="Subtasks", y="Frequency") +
+#     theme(axis.text.x = element_text(angle = 90)) +
+#     theme(axis.title.y = element_text(vjust=0.5)) +
+#     theme(axis.title.x = element_text(vjust=-0.1)) +
+#     theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
+#     theme(strip.text.y = element_text(colour = "red", angle = 45, size = 10,
+#                                       hjust = 0.5, vjust = 0.5))
+
+ggplot(approverDF) +
+    aes(x=Key, y=as.numeric(project_duration)) +
+    geom_point(aes(color=factor(Assignee))) +
+    facet_wrap(~year_created) +
+    ggtitle("Project duration by \nmonth project created by year created")
+
+
+ggplot(approverDF) +
+    aes(approverDF$stuff) +
+    geom_histogram(fill="firebrick")
