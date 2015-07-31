@@ -60,15 +60,44 @@ approverDF <- data.frame(Key = factor(myData$Key),
                  CEM.AT = as.integer(myData$Cem.Sunata.End - myData$Cem.Sunata.Start)/(SECINDAY),
                  TV.AT = as.integer(myData$Terry.Vahey.End - myData$Terry.Vahey.Start)/(SECINDAY))
 
-# TODO Clean up the small times
+
 # TODO Calculate the longest interval and call that the approval duration
-# TODO Remove timestamps hhmm and move everything that shows as 0 days to be .5 days
+# TODO Remove timestamps hhmm
+# Remove duplicates (3 of) and add all times into the one row
+dups <- anyDuplicated(approverDF$Key)
+
+while (dups != 0){
+    target <- which(approverDF$Key == approverDF$Key[dups])
+    for (i in 7:ncol(approverDF)){
+        approverDF[target, i] <- (approverDF[target, i] + approverDF[dups, i])
+    }
+    approverDF <- approverDF[-dups, ]
+    dups <- anyDuplicated(approverDF$Key)
+}
+
+# Now take same form and clean up small and 0 days intervals.
+for (r in 1:nrow(approverDF)){
+    for (i in 7:ncol(approverDF)){
+        if (!is.na(approverDF[r,i]) && approverDF[r,i] == 0){
+            approverDF[r,i] <- 0.5
+        } else if (!is.na(approverDF[r,i]) && approverDF[r,i] < 0.1){
+            approverDF[r,i] <- 0.1
+        }
+    } 
+}
+
+approverDF <- within(approverDF, {
+    
+})
 
 # convert to long form
-approverDF <- melt(approverDF, 
+meltApproverDF <- melt(approverDF, 
 #                    id.vars = c("Key, Creator, Assignee"), #TODO melt chokes on Creator,Assignee
                    id.vars = c("Key"),
-                   measured.vars = c("Created, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT"),
+                   measured.vars = c("PA.AT, DA.AT, AB.AT, MB.AT, KC.AT,
+                                     AC.AT, MC.AT, BG.AT, KI.AT, AL.AT, JL.AT, NO.AT,
+                                     JM.AT, BM.AT, TM.AT, CN.AT, DR.AT, LS.AT, MS.AT, 
+                                     SS.AT, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT"),
                    na.rm = TRUE,
                    variable.name = "stuff",
                    value.name = "values",
