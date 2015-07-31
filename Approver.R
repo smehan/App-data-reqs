@@ -135,6 +135,8 @@ ggplot(approverDF) +
     aes(x=Key, y=Duration.AT) +
     geom_point(aes(color=factor(Assignee))) +
     geom_hline(yintercept=mean(approverDF$Duration.AT), color="red") +
+    geom_hline(yintercept=mean(approverDF$Duration.AT)+3*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
+    geom_hline(yintercept=mean(approverDF$Duration.AT)-3*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
     theme_stata() +
     ggtitle("Approval Duration of \nApp Data Requests") +
     labs(x="Requests", y="Duration (days)") +
