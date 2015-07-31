@@ -86,9 +86,8 @@ for (r in 1:nrow(approverDF)){
     } 
 }
 
-approverDF <- within(approverDF, {
-    
-})
+# Retrieve max of the ATs
+approverDF$Duration.AT <- apply(approverDF[sapply(approverDF,is.numeric)],1,max,na.rm=TRUE)
 
 # convert to long form
 meltApproverDF <- melt(approverDF, 
