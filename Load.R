@@ -31,9 +31,14 @@ approverNamesVec <- unlist(str_split(approverNames, ", "))
 
 # now lets build the as.is list of columns including the approverNames
 
+# assemble the main df
 myData <- read.csv2("data/AppDataRequest2010-2015-clean.tsv", header=TRUE, sep = "\t", stringsAsFactors = TRUE,
                     as.is = c("Summary", "Description"))
 rownames(myData) <- myData$Key
+
+# find duplicates in Key and remove.
+#keyDups <- anyDuplicated(myData$Key)
+#myData <- myData[-keyDups, ]
 
 # Convert empty values to NA
 myData[myData == ""] <- NA
@@ -52,7 +57,7 @@ myData[approverCols] <- lapply(myData[approverCols], mdy)
 
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
-
+myData$Key <- str_replace(myData$Key, "DW-(.\\d*)", "\\1")
 ###########################################################
 ### Create calculated values
 ###########################################################
