@@ -82,21 +82,25 @@ for (r in 1:nrow(approverDF)){
             approverDF[r,i] <- 0.5
         } else if (!is.na(approverDF[r,i]) && approverDF[r,i] < 0.1){
             approverDF[r,i] <- 0.1
-        }
+        } 
     } 
 }
 
 # Retrieve max of the ATs
 approverDF$Duration.AT <- apply(approverDF[sapply(approverDF,is.numeric)],1,max,na.rm=TRUE)
 
+# Now clean up -Inf in Duration.AT
+# TODO
+
 # convert to long form
 meltApproverDF <- melt(approverDF, 
 #                    id.vars = c("Key, Creator, Assignee"), #TODO melt chokes on Creator,Assignee
                    id.vars = c("Key"),
-                   measured.vars = c("PA.AT, DA.AT, AB.AT, MB.AT, KC.AT,
-                                     AC.AT, MC.AT, BG.AT, KI.AT, AL.AT, JL.AT, NO.AT,
-                                     JM.AT, BM.AT, TM.AT, CN.AT, DR.AT, LS.AT, MS.AT, 
-                                     SS.AT, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT"),
+                   measure.vars = c("Duration.AT"),
+#                    measured.vars = c("PA.AT, DA.AT, AB.AT, MB.AT, KC.AT,
+#                                      AC.AT, MC.AT, BG.AT, KI.AT, AL.AT, JL.AT, NO.AT,
+#                                      JM.AT, BM.AT, TM.AT, CN.AT, DR.AT, LS.AT, MS.AT, 
+#                                      SS.AT, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT, Duration.AT"),
                    na.rm = TRUE,
                    variable.name = "stuff",
                    value.name = "values",
@@ -128,5 +132,16 @@ ggplot(approverDF) +
 
 
 ggplot(approverDF) +
-    aes(approverDF$stuff) +
-    geom_histogram(fill="firebrick")
+    aes(x=Key, y=Duration.AT) +
+    geom_point(aes(color=factor(Assignee))) +
+    geom_hline(yintercept=mean(approverDF$Duration.AT), color="red") +
+    theme_stata() +
+    ggtitle("Approval Duration of \nApp Data Requests") +
+    labs(x="Requests", y="Duration (days)") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    theme(strip.text.x = element_text(colour = "red", angle = 45, size = 10, hjust = 0.5, vjust = 0.5)) +
+    theme(axis.title.y = element_text(vjust=1.0)) +
+    theme(axis.title.x = element_text(vjust=-0.1)) +
+    theme(plot.title = element_text(size=20, face="bold", vjust=2))
+    
+
