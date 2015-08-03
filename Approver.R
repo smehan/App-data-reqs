@@ -4,15 +4,10 @@
 ### Works off of dataset already cleansed from Load.R
 ###########################################################
 
+library(qcc)
+
 # First read in data set
 myData <- readRDS(file="data/App_Data_Reqs.rds")
-
-# some scratch
-# trial <- data.frame(id = factor(1:4), 
-#                     A1 = c(1, 2, 1, 2), 
-#                     A2 = c(2, 1, 2, 1),
-#                     B1 = c(3, 3, 3, 3))
-# trialm <- melt(trial)
 
 # if we need to identify and remove Key dups
 dups <- anyDuplicated(approverDF$Key)
@@ -110,20 +105,6 @@ meltApproverDF <- melt(approverDF,
 ##########################################################
 ### Add some plots
 ##########################################################
-# ggplot(myData) +
-#     aes(myData$X..of.Sub.Tasks) +
-#     geom_histogram(fill="firebrick") +
-#     facet_grid(Assignee~year_created) +
-#     theme_stata() +
-#     ggtitle("Subtasks per assignee per year created") +
-#     labs(x="Subtasks", y="Frequency") +
-#     theme(axis.text.x = element_text(angle = 90)) +
-#     theme(axis.title.y = element_text(vjust=0.5)) +
-#     theme(axis.title.x = element_text(vjust=-0.1)) +
-#     theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
-#     theme(strip.text.y = element_text(colour = "red", angle = 45, size = 10,
-#                                       hjust = 0.5, vjust = 0.5))
-
 ggplot(approverDF) +
     aes(x=Key, y=as.numeric(project_duration)) +
     geom_point(aes(color=factor(Assignee))) +
@@ -146,4 +127,17 @@ ggplot(approverDF) +
     theme(axis.title.x = element_text(vjust=-0.1)) +
     theme(plot.title = element_text(size=20, face="bold", vjust=2))
     
+# Using qcc to get a simple XmR
+# Get the vector of observations in which are interested
+my.xmr.raw <- approverDF$Duration.AT
+# Create the individuals chart and qcc object
+my.xmr.x <- qcc(my.xmr.raw, type = "xbar.one", plot = T)
+# Create a moving range chart as a qcc object. This takes a 2-col matrix that is used
+# to calculate the moving range.
+my.xmr.raw.r  <- matrix(cbind(my.xmr.raw[1:length(my.xmr.raw)-1],
+                              my.xmr.raw[2:length(my.xmr.raw)]),
+                        ncol = 2)
+# Make the XmR plot
+my.xmr.mr <- qcc(my.xmr.raw.r, type="R", plot = T)
+
 
