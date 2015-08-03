@@ -145,5 +145,10 @@ my.xmr.mr <- qcc(my.xmr.raw.r, type="R", plot = T,
                  ylab = "Duration (days)",
                  axes.las = 0)
 
-
+# density plot for the approval time
+ggplot(approverDF, aes(x=approverDF$Duration.AT)) +
+    geom_density(na.rm=T) +
+    geom_vline(xintercept=mean(approverDF$Duration.AT), color="red") +
+    ggtitle("Density Plot for Approval Process Duration Times") +
+    labs(x="Duration (days)", y="Probability Density")
 
