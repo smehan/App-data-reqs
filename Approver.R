@@ -150,5 +150,5 @@ ggplot(approverDF, aes(x=approverDF$Duration.AT)) +
     geom_density(na.rm=T) +
     geom_vline(xintercept=mean(approverDF$Duration.AT), color="red") +
     ggtitle("Density Plot for Approval Process Duration Times") +
-    labs(x="Duration (days)", y="Probability Density")
+    labs(x="Duration (days)", y="Kernel Density")
 
