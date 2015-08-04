@@ -140,7 +140,7 @@ my.xmr.raw.r  <- matrix(cbind(my.xmr.raw[1:length(my.xmr.raw)-1],
 # Make the XmR plot
 my.xmr.mr <- qcc(my.xmr.raw.r, type="R", plot = T, 
                  add.stats = T,
-                 title = "Approval Process X-bar \nand Moving Range Chart",
+                 title = "Approval Process XmR Chart",
                  xlab = "Approval Tasks",
                  ylab = "Duration (days)",
                  axes.las = 0)
