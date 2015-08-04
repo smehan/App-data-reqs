@@ -116,8 +116,8 @@ ggplot(approverDF) +
     aes(x=Key, y=Duration.AT) +
     geom_point(aes(color=factor(Assignee))) +
     geom_hline(yintercept=mean(approverDF$Duration.AT), color="red") +
-    geom_hline(yintercept=mean(approverDF$Duration.AT)+3*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
-    geom_hline(yintercept=mean(approverDF$Duration.AT)-3*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
+    geom_hline(yintercept=mean(approverDF$Duration.AT)+2.66*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
+    geom_hline(yintercept=mean(approverDF$Duration.AT)-2.66*sd(approverDF$Duration.AT), linetype=2, color="Navy Blue") +
     theme_stata() +
     ggtitle("Approval Duration of \nApp Data Requests") +
     labs(x="Requests", y="Duration (days)") +
@@ -152,3 +152,10 @@ ggplot(approverDF, aes(x=approverDF$Duration.AT)) +
     ggtitle("Density Plot for Approval Process Duration Times") +
     labs(x="Duration (days)", y="Kernel Density")
 
+cause.and.effect(cause=list(Measurements=c("Theresa", "Terri", "Tmay"),
+                            Materials=c("Alloys", "Lubricants", "Suppliers"),
+                            Personnel=c("Shifts", "Supervisors", "Training", "Operators"), 
+                            Environment=c("Condensation", "Moisture"), 
+                            Methods=c("Brake", "Engager", "Angle"),
+                            Machines=c("Speed", "Lathes", "Bits", "Sockets")),
+                effect="Surface Flaws")
