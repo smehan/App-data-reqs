@@ -152,10 +152,4 @@ ggplot(approverDF, aes(x=approverDF$Duration.AT)) +
     ggtitle("Density Plot for Approval Process Duration Times") +
     labs(x="Duration (days)", y="Kernel Density")
 
-cause.and.effect(cause=list(Measurements=c("Theresa", "Terri", "Tmay"),
-                            Materials=c("Alloys", "Lubricants", "Suppliers"),
-                            Personnel=c("Shifts", "Supervisors", "Training", "Operators"), 
-                            Environment=c("Condensation", "Moisture"), 
-                            Methods=c("Brake", "Engager", "Angle"),
-                            Machines=c("Speed", "Lathes", "Bits", "Sockets")),
-                effect="Surface Flaws")
+
