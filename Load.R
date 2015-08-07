@@ -58,6 +58,7 @@ myData[approverCols] <- lapply(myData[approverCols], mdy)
 # Reduce vector noise by removing noise text
 myData$Summary <- str_replace(myData$Summary, "^App Data Request - (.*)", "\\1")
 myData$Key <- str_replace(myData$Key, "DW-(.\\d*)", "\\1")
+
 ###########################################################
 ### Create calculated values
 ###########################################################
