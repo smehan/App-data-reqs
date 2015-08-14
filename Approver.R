@@ -86,6 +86,7 @@ approverDF$Duration.AT <- apply(approverDF[sapply(approverDF,is.numeric)],1,max,
 
 # Now clean up -Inf in Duration.AT
 # TODO
+approverDF <- approverDF[approverDF$Duration.AT > 0, ]
 
 # convert to long form
 meltApproverDF <- melt(approverDF, 
@@ -106,10 +107,10 @@ meltApproverDF <- melt(approverDF,
 ### Add some plots
 ##########################################################
 ggplot(approverDF) +
-    aes(x=Key, y=as.numeric(project_duration)) +
+    aes(x=Key, y=as.numeric(Duration.AT)) +
     geom_point(aes(color=factor(Assignee))) +
-    facet_wrap(~year_created) +
-    ggtitle("Project duration by \nmonth project created by year created")
+    # facet_wrap(~year_created) +
+    ggtitle("Approval time by \nmonth project created by year created")
 
 
 ggplot(approverDF) +
