@@ -86,6 +86,9 @@ approverDF$Duration.AT <- apply(approverDF[sapply(approverDF,is.numeric)],1,max,
 
 # Now clean up -Inf in Duration.AT
 # TODO
+# This simply removes the -Inf, but still need to decide what to do with these
+# missing values.
+approverDF <- approverDF[-approverDF$Duration.AT < 0, ]
 
 # convert to long form
 meltApproverDF <- melt(approverDF, 
