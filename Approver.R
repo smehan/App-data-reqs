@@ -133,8 +133,13 @@ ggplot(approverDF) +
 # Using qcc to get a simple XmR
 # Get the vector of observations in which are interested
 my.xmr.raw <- approverDF$Duration.AT
+
 # Create the individuals chart and qcc object
 my.xmr.x <- qcc(my.xmr.raw, type = "xbar.one", plot = T)
+
+# Create a process capability analysis of the xbar.one
+process.capability(my.xmr.x, spec.limits = c(-25.02,53.69))
+
 # Create a moving range chart as a qcc object. This takes a 2-col matrix that is used
 # to calculate the moving range.
 my.xmr.raw.r  <- matrix(cbind(my.xmr.raw[1:length(my.xmr.raw)-1],
@@ -147,6 +152,10 @@ my.xmr.mr <- qcc(my.xmr.raw.r, type="R", plot = T,
                  xlab = "Approval Tasks",
                  ylab = "Duration (days)",
                  axes.las = 0)
+
+# And now identify which observations are violating runs and which are out of control
+beyond.limits(my.xmr.mr, limits = my.xmr.mr$limits)
+violating.runs(my.xmr.mr, run.length = qcc.options("run.length"))
 
 # density plot for the approval time
 ggplot(approverDF, aes(x=approverDF$Duration.AT)) +
