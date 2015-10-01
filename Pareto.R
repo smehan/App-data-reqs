@@ -7,7 +7,7 @@
 library(ggplot2)
 
 # First read in paretoDFa set
-paretoDF <- readRDS(file="paretoDFa/App_paretoDFa_Reqs.rds")
+paretoDF <- readRDS(file="data/Approvals.rds")
 
 # Subset only durations
 paretoDF <- paretoDF[c("Key", "Duration.AT")]
