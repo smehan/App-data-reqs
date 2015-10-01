@@ -114,3 +114,4 @@ ggplot(myData) +
     theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
     theme(strip.text.y = element_text(colour = "red", angle = 45, size = 10,
                                       hjust = 0.5, vjust = 0.5))
+
