@@ -89,21 +89,10 @@ approverDF$Duration.AT <- apply(approverDF[sapply(approverDF,is.numeric)],1,max,
 # missing values.
 approverDF <- approverDF[-approverDF$Duration.AT < 0, ]
 
-# convert to long form
-meltApproverDF <- melt(approverDF, 
-#                    id.vars = c("Key, Creator, Assignee"), #TODO melt chokes on Creator,Assignee
-                   id.vars = c("Key"),
-                   measure.vars = c("Duration.AT"),
-#                    measured.vars = c("PA.AT, DA.AT, AB.AT, MB.AT, KC.AT,
-#                                      AC.AT, MC.AT, BG.AT, KI.AT, AL.AT, JL.AT, NO.AT,
-#                                      JM.AT, BM.AT, TM.AT, CN.AT, DR.AT, LS.AT, MS.AT, 
-#                                      SS.AT, CS.AT, PS.AT, SUESS.AT, CEM.AT, TV.AT, Duration.AT"),
-                   na.rm = TRUE,
-                   variable.name = "stuff",
-                   value.name = "values",
-                   factorsAsStrings = T)
+### Finally, serialize the data frame for use in other scripts
+###########################################################
 
-
+saveRDS(myData, "data/Approvals.rds")
 ##########################################################
 ### Add some plots
 ##########################################################
