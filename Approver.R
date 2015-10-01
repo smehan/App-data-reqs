@@ -103,7 +103,10 @@ meltApproverDF <- melt(approverDF,
                    value.name = "values",
                    factorsAsStrings = T)
 
+### Finally, serialize the data frame for use in other scripts
+###########################################################
 
+saveRDS(myData, "data/Approvals.rds")
 ##########################################################
 ### Add some plots
 ##########################################################
