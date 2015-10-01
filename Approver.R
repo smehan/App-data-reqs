@@ -3,7 +3,6 @@
 ### including durations, numbers of approvers, etc.
 ### Works off of dataset already cleansed from Load.R
 ###########################################################
-
 library(qcc)
 
 # First read in data set
