@@ -92,7 +92,7 @@ approverDF <- approverDF[-approverDF$Duration.AT < 0, ]
 ### Finally, serialize the data frame for use in other scripts
 ###########################################################
 
-saveRDS(myData, "data/Approvals.rds")
+saveRDS(approverDF, "data/Approvals.rds")
 ##########################################################
 ### Add some plots
 ##########################################################
