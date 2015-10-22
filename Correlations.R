@@ -7,6 +7,9 @@
 ###########################################################
 
 library(dplyr)
+library(ggplot2)
+library(reshape2)
+
 # First read in data set
 approvalsDF <- readRDS(file="data/Approvals.rds")
 
@@ -36,5 +39,48 @@ questionCodes$Questions <- ifelse(questionCodes$Questions == "y", "Y",
                                   ifelse(questionCodes$Questions == "n", "N", NA))
 
 # Join Questions onto Approvals
-left_join(approvalsDF, questionCodes)
+approvalsQuestDF <- left_join(approvalsDF, questionCodes)
 
+# clean up
+rm(questionCodes, keep)
+
+# need to make the Question code a numeric map
+approvalsQuestCoded <- approvalsQuestDF
+approvalsQuestCoded$QCode <- ifelse(approvalsQuestDF$Questions == "Y", 1, 0)
+approvalsQuestCoded <- approvalsQuestCoded[c(-33)]
+
+### Following is for building out an approval time factor correlation heatmap
+corout <- cor(noTV[,7:32], use = "pairwise.complete")
+corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+#now order the result for plotting
+colcorsOrdered <- corout[order(corout$Correlations), ]
+
+#now plot as a heat map
+library(scales)
+ggplot(colcorsOrdered) +
+    aes(x=x, y=y) +
+    geom_tile(aes(fill=Correlations)) +
+    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
+                         limits=c(-1,1)) +
+    theme_minimal() +
+    labs(x=NULL, y=NULL) +
+    ggtitle("Correlation Heat Map of Approval Times")
+
+### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
+corout <- cor(approvalsQuestCoded[,7:33], use = "pairwise.complete", method = "spearman")
+corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+#now order the result for plotting
+colcorsOrdered <- corout[order(corout$Correlations), ]
+
+#now plot as a heat map
+library(scales)
+ggplot(colcorsOrdered) +
+    aes(x=x, y=y) +
+    geom_tile(aes(fill=Correlations)) +
+    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
+                         limits=c(-1,1)) +
+    theme_minimal() +
+    labs(x=NULL, y=NULL) +
+    ggtitle("Correlation Heat Map of Approval Times")
