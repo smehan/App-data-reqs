@@ -50,6 +50,7 @@ approvalsQuestCoded$QCode <- ifelse(approvalsQuestDF$Questions == "Y", 1, 0)
 approvalsQuestCoded <- approvalsQuestCoded[c(-33)]
 
 ### Following is for building out an approval time factor correlation heatmap
+noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
 corout <- cor(noTV[,7:32], use = "pairwise.complete")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
 #now order the result for plotting
