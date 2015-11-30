@@ -5,24 +5,26 @@
 ###########################################################
 
 library(ggplot2)
+library(plyr)
 
 # First read in paretoDFa set
 paretoDF <- readRDS(file="data/Approvals.rds")
 
 # Subset only durations
 paretoDF <- paretoDF[c("Key", "Duration.AT")]
-paretoDF <- count(paretoDF, Duration.AT, sort=TRUE)
+paretoDF <- count(paretoDF, vars = "Duration.AT")
 
-# Change colnames to more useful lables
+# rewrite Duration with factors and levels
+paretoDF$Duration.AT <- factor(paretoDF$Duration.AT, levels=paretoDF$Duration.AT)
+
+# Change colnames to more useful labels
 colnames(paretoDF)[2] <- "Count"
 
 # pareto.chart(approverDF$Duration.AT, ylab="Something")
 
 # reorder on decreasing count
-paretoDF <- paretoDF[order(paretoDF$Count, decreasing=TRUE), ]
-
-# rewrite Duration with factors and levels
-paretoDF$Duration.AT <- factor(paretoDF$Duration.AT, levels=paretoDF$Duration.AT)
+# this creates a bad order for cumsum so don't execute it
+# paretoDF <- paretoDF[order(paretoDF$Count, decreasing=TRUE), ]
 
 # Create cumsums of counts in new column
 paretoDF$cum <- cumsum(paretoDF$Count)
