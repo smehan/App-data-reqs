@@ -4,6 +4,7 @@
 ### Works off of dataset already cleansed from Load.R
 ###########################################################
 library(qcc)
+library(ggplot2)
 
 # First read in data set
 myData <- readRDS(file="data/App_Data_Reqs.rds")
@@ -52,7 +53,44 @@ approverDF <- data.frame(Key = factor(myData$Key),
                  PS.AT = as.integer(myData$Patricia.Stoneman.End - myData$Patricia.Stoneman.Start)/(SECINDAY),
                  SUESS.AT = as.integer(myData$Mike.Suess.End - myData$Mike.Suess.Start)/(SECINDAY),
                  CEM.AT = as.integer(myData$Cem.Sunata.End - myData$Cem.Sunata.Start)/(SECINDAY),
-                 TV.AT = as.integer(myData$Terry.Vahey.End - myData$Terry.Vahey.Start)/(SECINDAY))
+                 TV.AT = as.integer(myData$Terry.Vahey.End - myData$Terry.Vahey.Start)/(SECINDAY),
+                 JW.AT = as.integer(myData$Joanne.Williams.End - myData$Joanne.Williams.Start)/(SECINDAY),
+                 JS.AT = as.integer(myData$June.Serjeant.End - myData$June.Serjeant.Start)/(SECINDAY),
+                 LL.AT = as.integer(myData$Lorlie.Leetham.End - myData$Lorlie.Leetham.Start)/(SECINDAY),
+                 ES.AT = as.integer(myData$Eumi.Sprague.End - myData$Eumi.Sprague.Start)/(SECINDAY),
+                 TD.AT = as.integer(myData$Trey.Duffy.End - myData$Trey.Duffy.Start)/(SECINDAY),
+                 SSTE.AT = as.integer(myData$Shannon.Stephens.End - myData$Shannon.Stephens.Start)/(SECINDAY),
+                 ST.AT = as.integer(myData$Susan.Tripp.End - myData$Susan.Tripp.Start)/(SECINDAY),
+                 SB.AT = as.integer(myData$Stacey.Breitenbach.End - myData$Stacey.Breitenbach.Start)/(SECINDAY),
+                 SSPA.AT = as.integer(myData$Susan.Sparling.End - myData$Susan.Sparling.Start)/(SECINDAY),
+                 SA.AT = as.integer(myData$Sema.Alptekin.End - myData$Sema.Alptekin.Start)/(SECINDAY),
+                 VB.AT = as.integer(myData$Victor.Brancart.End - myData$Victor.Brancart.Start)/(SECINDAY),
+                 PD.AT = as.integer(myData$Philip.Davis.End - myData$Philip.Davis.Start)/(SECINDAY),
+                 RM.AT = as.integer(myData$Ryan.Matteson.End - myData$Ryan.Matteson.Start)/(SECINDAY),
+                 MR.AT = as.integer(myData$Melinda.Rojo.End - myData$Melinda.Rojo.Start)/(SECINDAY),
+                 JH.AT = as.integer(myData$Joyce.Haratani.End - myData$Joyce.Haratani.Start)/(SECINDAY),
+                 MBEN.AT = as.integer(myData$Marc.Benadiba.End - myData$Marc.Benadiba.Start)/(SECINDAY),
+                 CHM.AT = as.integer(myData$Carter.Hammett.McGarry.End - myData$Carter.Hammett.McGarry.Start)/(SECINDAY),
+                 JMEA.AT = as.integer(myData$Joanne.Mead.End - myData$Joanne.Mead.Start)/(SECINDAY),
+                 CCA.AT = as.integer(myData$Cassie.Carter.End - myData$Cassie.Carter.Start)/(SECINDAY),
+                 DG.AT = as.integer(myData$Denise.Gibbons.End - myData$Denise.Gibbons.Start)/(SECINDAY))
+
+
+start <- myData[990,51]
+if (is.na(start)){
+    start <- ymd("2015-12-25")
+}
+tmp <- ymd("2015-12-25")
+for (i in 53:100){
+    thisDate <- myData[990,i]
+    if (!is.na(thisDate)){
+        tmp <- thisDate
+    }
+    if (tmp < start){
+        start <- tmp
+    }
+}
+
 
 
 # TODO Calculate the longest interval and call that the approval duration
