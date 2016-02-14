@@ -84,3 +84,63 @@ ggplot(colcorsOrdered) +
     theme_minimal() +
     labs(x=NULL, y=NULL) +
     ggtitle("Correlation Heat Map of Approval Times")
+
+### SSAT vs MaxDurationAT group by were there questions
+ggplot(approvalsQuestDF) +
+    aes(x = SS.AT, y = Duration.AT, color = Questions) +
+    geom_point(na.rm = TRUE)
+
+
+p1 <- ggplot(approvalsQuestDF) +
+    aes(x = approvalsQuestDF[,25], y = Duration.AT, color = Questions) +
+    geom_point()
+
+p2 <- ggplot(approvalsQuestDF) +
+    aes(x = approvalsQuestDF[,24], y = Duration.AT, color = Questions) +
+    geom_point()
+
+p3 <- ggplot(approvalsQuestDF) +
+    aes(x = approvalsQuestDF[,23], y = Duration.AT, color = Questions) +
+    geom_point()
+
+p4 <- ggplot(approvalsQuestDF) +
+    aes(x = approvalsQuestDF[,22], y = Duration.AT, color = Questions) +
+    geom_point()
+
+### http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+    library(grid)
+    
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+    
+    numPlots = length(plots)
+    
+    # If layout is NULL, then use 'cols' to determine layout
+    if (is.null(layout)) {
+        # Make the panel
+        # ncol: Number of columns of plots
+        # nrow: Number of rows needed, calculated from # of cols
+        layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                         ncol = cols, nrow = ceiling(numPlots/cols))
+    }
+    
+    if (numPlots==1) {
+        print(plots[[1]])
+        
+    } else {
+        # Set up the page
+        grid.newpage()
+        pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+        
+        # Make each plot, in the correct location
+        for (i in 1:numPlots) {
+            # Get the i,j matrix positions of the regions that contain this subplot
+            matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+            
+            print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                            layout.pos.col = matchidx$col))
+        }
+    }
+}
+multiplot(p1, p2, p3, p4, cols = 2)
