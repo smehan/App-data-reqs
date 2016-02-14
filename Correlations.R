@@ -10,6 +10,7 @@ library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(scales)
+library(stringr)
 
 # First read in data set
 approvalsDF <- readRDS(file="data/Approvals.rds")
