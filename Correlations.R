@@ -48,12 +48,14 @@ rm(questionCodes, keep)
 # need to make the Question code a numeric map
 approvalsQuestCoded <- approvalsQuestDF
 approvalsQuestCoded$QCode <- ifelse(approvalsQuestDF$Questions == "Y", 1, 0)
-approvalsQuestCoded <- approvalsQuestCoded[c(-33)]
+# now remove the text coded column
+approvalsQuestCoded <- approvalsQuestCoded[c(-53)]
 
 ### Following is for building out an approval time factor correlation heatmap
+# this will remove all of the rows with a duration (and hence participation) for TV
 noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
 ### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
-corout <- cor(approvalsQuestCoded[,7:33], use = "pairwise.complete", method = "spearman")
+corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
 
 #now order the result for plotting
