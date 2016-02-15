@@ -132,3 +132,10 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
 }
 multiplot(p1, p2, p3, p4, cols = 2)
+
+######  Create a csv showing only those items that have correlation data
+######  remove rows with 'na'
+CorOnly <- corout[!is.na(corout$Correlations),]
+###  create csv file for exporting
+write.csv(CorOnly, file = 'AppDataCorrelations.csv')
+#####  End of csv creation
