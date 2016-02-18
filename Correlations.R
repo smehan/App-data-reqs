@@ -55,6 +55,9 @@ approvalsQuestCoded <- approvalsQuestCoded[c(-53)]
 ### Following is for building out an approval time factor correlation heatmap
 # this will remove all of the rows with a duration (and hence participation) for TV
 noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
+# this is getting used more, so going to serialize it to disk for other modules to access
+saveRDS(noTV, "data/noTV.rds")
+
 ### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
 corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
