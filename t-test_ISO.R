@@ -10,8 +10,9 @@ noTV <- readRDS(file="data/noTV.rds")
 ##### Is the Mean Higher?
 ###  Only keep the rows that involve ISO from noTV
 ISOonly <- noTV[!is.na(noTV$SS.AT),]
+
 ###  Display the Mean of Approval Time 
-mean (ISOonly[["Duration.AT"]], na.rm = TRUE)
+mean(ISOonly[["Duration.AT"]], na.rm = TRUE)
 #####  End Display of Mean for Requests that Involve ISO
 
 ### Create new column that contains difference of max duration and SS (ISO) duration
@@ -37,8 +38,33 @@ ggplot(ISOonly) +
     geom_histogram(breaks=seq(0, 40, by =2),
                    col="red",
                    aes(fill=..count..)) +
-    ggtitle("Differences Histogram Plot") + 
+    scale_fill_gradient("Count", low = "green", high = "purple") +
+    ggtitle("Differences Histogram") + 
     labs(x="Differences between ISO and Max Durations", y="Frequency")
+
+ggplot(ISOonly) +
+    aes(Diff) + 
+    geom_histogram(data=subset(ISOonly,QCode == '1'),
+                   breaks=seq(0,40, by=2),
+                   col="red",
+                   fill = "blue", alpha = 0.2) +
+    geom_histogram(data=subset(ISOonly,QCode == '0'),
+                   breaks=seq(0,40, by=2),
+                   col="red",
+                   fill = "green", alpha = 0.2) +
+    ggtitle("Differences Histogram") + 
+    labs(x="Differences between ISO and Max Durations, by QCode", y="Frequency")
+
+ggplot(ISOonly) +
+    aes(Diff) + 
+    geom_histogram(position="identity",
+                   breaks=seq(0,40, by=2),
+                   col="red",
+                   aes(fill=..count..)) +
+    facet_grid(. ~ QCode, labeller = as_labeller(c('0'="No Questions", '1'="With Questions"))) +
+    ggtitle("Differences Histogram") + 
+    labs(x="Differences between ISO and Max Durations, by QCode", y="Frequency")
+
 
 ggplot(ISOonly) +
     aes(x=seq(1,length(Diff)), y=Diff) +
