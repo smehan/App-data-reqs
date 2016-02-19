@@ -42,28 +42,28 @@ ggplot(ISOonly) +
     ggtitle("Differences Histogram") + 
     labs(x="Differences between ISO and Max Durations", y="Frequency")
 
-ggplot(ISOonly) +
-    aes(Diff) + 
-    geom_histogram(data=subset(ISOonly,QCode == '1'),
+ggplot(noTV) +
+    aes(Duration.AT) + 
+    geom_histogram(data=subset(noTV,QCode == '1'),
                    breaks=seq(0,40, by=2),
                    col="red",
                    fill = "blue", alpha = 0.2) +
-    geom_histogram(data=subset(ISOonly,QCode == '0'),
+    geom_histogram(data=subset(noTV,QCode == '0'),
                    breaks=seq(0,40, by=2),
                    col="red",
                    fill = "green", alpha = 0.2) +
-    ggtitle("Differences Histogram") + 
-    labs(x="Differences between ISO and Max Durations, by QCode", y="Frequency")
+    ggtitle("Histogram") + 
+    labs(x="Frequency Distribution of Max Durations, by QCode", y="Frequency")
 
-ggplot(ISOonly) +
-    aes(Diff) + 
+ggplot(noTV) +
+    aes(Duration.AT) + 
     geom_histogram(position="identity",
                    breaks=seq(0,40, by=2),
                    col="red",
                    aes(fill=..count..)) +
     facet_grid(. ~ QCode, labeller = as_labeller(c('0'="No Questions", '1'="With Questions"))) +
-    ggtitle("Differences Histogram") + 
-    labs(x="Differences between ISO and Max Durations, by QCode", y="Frequency")
+    ggtitle("Histogram") + 
+    labs(x="Frequency Distribution of Durations, by QCode", y="Frequency")
 
 
 ggplot(ISOonly) +
