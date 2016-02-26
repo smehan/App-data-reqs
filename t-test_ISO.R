@@ -94,5 +94,8 @@ ISOWait <- ISOonly$Diff[ISOonly$Diff <= 2]
 ISONoWait <- ISOonly$Diff[ISOonly$Diff > 2]
 
 ### T-test will compare the means of the two samples:  Waiting for ISO and Not Waiting for ISO
-t.test(ISOWait, ISONoWait)
+### Ho: Mean of Approvers Waiting for ISO = Mean of Approvers NOT Waiting for ISO
+
+t.test(ISOWait, ISONoWait, conf.level = 0.90)
+
 

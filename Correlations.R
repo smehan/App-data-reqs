@@ -58,8 +58,14 @@ noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
 # this is getting used more, so going to serialize it to disk for other modules to access
 saveRDS(noTV, "data/noTV.rds")
 
+### modified to only include those with questions (Qcode == 1) from noTV
 ### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
-corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
+### corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
+### corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+### Create subsets for Questions and NoQuestions
+Questions <- subset(noTV, QCode == 1)
+NoQuestions <- subset(noTV, QCode == 0)
+corout <- cor(Questions[,7:53], use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
 
 #now order the result for plotting
@@ -74,7 +80,7 @@ ggplot(colcorsOrdered) +
                          limits=c(-1,1)) +
     theme_minimal() +
     labs(x=NULL, y=NULL) +
-    ggtitle("Correlation Heat Map of Approval Times")
+    ggtitle("Correlation Heat Map of Approval Times\n Requests with Questions")
 
 ### SSAT vs MaxDurationAT group by were there questions
 ggplot(approvalsQuestDF) +
@@ -142,3 +148,4 @@ CorOnly <- corout[!is.na(corout$Correlations),]
 ###  create csv file for exporting
 write.csv(CorOnly, file = 'AppDataCorrelations.csv')
 #####  End of csv creation
+
