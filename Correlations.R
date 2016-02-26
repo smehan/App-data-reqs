@@ -58,15 +58,37 @@ noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
 # this is getting used more, so going to serialize it to disk for other modules to access
 saveRDS(noTV, "data/noTV.rds")
 
-### modified to only include those with questions (Qcode == 1) from noTV
-### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
-### corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
-### corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
-### Create subsets for Questions and NoQuestions
+#################################################
+### Working with correlation matrix
+#################################################
+# Original attempt uses a subset of the total dataframe, removing the columns that
+# have no place in the final correlation matrix.
+# Uses pairwise complete because of sparse nature of combinations,
+# and spearman for same reason.
+# Calculate the correlation matrix, then melt data and pass to appropriate correlogram
+corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
+corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+
+# Create subsets for Questions and NoQuestions
+# in an effort to separate these two dimensions cleanly
 Questions <- subset(noTV, QCode == 1)
 NoQuestions <- subset(noTV, QCode == 0)
+# subset removes rows that don't meet the second param as a test, so splitting into two subsets.
+### modified to only include those with questions (Qcode == 1) from noTV
+### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
+
+# now repeat the correlation matrix
 corout <- cor(Questions[,7:53], use = "pairwise.complete", method = "spearman")
+
+# but this method leaves all of the extra columns in and makes it hard to interpret.
+# therefore, need to reduce the data through elimination of the columns with all NA
+# that can not contribute to the correlation calculation.
+# start over with sets into correlation matrix.
+ReducedQuestions <- Questions[, colSums(is.na(Questions))<nrow(Questions)]
+# now proceed with corout, melt, etc.
+corout <- cor(ReducedQuestions, use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+
 
 #now order the result for plotting
 colcorsOrdered <- corout[order(corout$Correlations), ]
@@ -81,6 +103,9 @@ ggplot(colcorsOrdered) +
     theme_minimal() +
     labs(x=NULL, y=NULL) +
     ggtitle("Correlation Heat Map of Approval Times\n Requests with Questions")
+
+
+##########################################################
 
 ### SSAT vs MaxDurationAT group by were there questions
 ggplot(approvalsQuestDF) +
@@ -146,6 +171,6 @@ multiplot(p1, p2, p3, p4, cols = 2)
 ######  remove rows with 'na'
 CorOnly <- corout[!is.na(corout$Correlations),]
 ###  create csv file for exporting
-write.csv(CorOnly, file = 'AppDataCorrelations.csv')
+write.csv(CorOnly, file = 'AppDataCorrelations-Questions.csv')
 #####  End of csv creation
 
