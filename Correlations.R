@@ -88,11 +88,11 @@ corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations
 #################################################################################
 
 # now proceed with corout, melt, etc.
-corout <- cor(Questions, use = "pairwise.complete", method = "spearman")
-corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+coroutQ <- cor(Questions, use = "pairwise.complete", method = "spearman")
+coroutQ <- melt(data = coroutQ, varnames = c("x", "y"), value.name = "Correlations")
 
 #now order the result for plotting
-colcorsOrdered <- corout[order(corout$Correlations), ]
+colcorsOrdered <- coroutQ[order(coroutQ$Correlations), ]
 
 #now plot as a heat map
 ggplot(colcorsOrdered) +
@@ -114,11 +114,11 @@ ggplot(colcorsOrdered) +
 #################################################################################
 
 # now proceed with corout, melt, etc.
-corout <- cor(NoQuestions, use = "pairwise.complete", method = "spearman")
-corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+coroutNQ <- cor(NoQuestions, use = "pairwise.complete", method = "spearman")
+coroutNQ <- melt(data = coroutNQ, varnames = c("x", "y"), value.name = "Correlations")
 
 #now order the result for plotting
-colcorsOrdered <- corout[order(corout$Correlations), ]
+colcorsOrdered <- coroutNQ[order(coroutNQ$Correlations), ]
 
 #now plot as a heat map
 ggplot(colcorsOrdered) +
@@ -136,7 +136,75 @@ ggplot(colcorsOrdered) +
 ##########################################################
 
 
+###################################################################
+## Create correlation heat map for ISO Wait and No Wait conditions
+###################################################################
 
+###  Only keep the rows that involve ISO from noTV
+ISOonly <- noTV[!is.na(noTV$SS.AT),]
+
+### Create new column that contains difference of max duration and SS (ISO) duration
+ISOonly$Diff <- ISOonly$Duration.AT - ISOonly$SS.AT
+
+# prepare data set for correlation matrix
+# reduce the data through elimination of the columns with all NA
+# only keep relevant columns that contain approver durations
+ReducedISO <- ISOonly[, colSums(is.na(ISOonly))<nrow(ISOonly)]
+ReducedISOCol <- subset(ReducedISO, select = c(7:35))
+
+### Create subset of Differences <=2 and > 2
+ISOWaitCor <- subset(ReducedISOCol, Diff <= 2, select = 1:27)
+ISONoWaitCor <- subset(ReducedISOCol, Diff > 2, select = 1:27)
+
+#################################################################################
+### Following is for building a correlation heat map for ISO Wait
+#################################################################################
+
+# now proceed with corout, melt, etc.
+coroutIW <- cor(ISOWaitCor, use = "pairwise.complete", method = "spearman")
+coroutIW <- melt(data = coroutIW, varnames = c("x", "y"), value.name = "Correlations")
+
+#now order the result for plotting
+colcorsOrdered <- coroutIW[order(coroutIW$Correlations), ]
+
+#now plot as a heat map
+ggplot(colcorsOrdered) +
+    aes(x=x, y=y) +
+    geom_tile(aes(fill=Correlations)) +
+    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
+                         limits=c(-1,1)) +
+    theme_minimal() +
+    labs(x=NULL, y=NULL) +
+    ggtitle("Correlation Heat Map of Approval Times\n Requests Waiting for ISO")
+##########################################################
+### End correlation plot for ISO Wait
+##########################################################
+
+#################################################################################
+### Following is for building a correlation heat map for ISO No Wait
+#################################################################################
+
+# now proceed with corout, melt, etc.
+coroutINW <- cor(ISONoWaitCor, use = "pairwise.complete", method = "spearman")
+coroutINW <- melt(data = coroutINW, varnames = c("x", "y"), value.name = "Correlations")
+
+#now order the result for plotting
+colcorsOrdered <- coroutINW[order(coroutINW$Correlations), ]
+
+#now plot as a heat map
+ggplot(colcorsOrdered) +
+    aes(x=x, y=y) +
+    geom_tile(aes(fill=Correlations)) +
+    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
+                         limits=c(-1,1)) +
+    theme_minimal() +
+    labs(x=NULL, y=NULL) +
+    ggtitle("Correlation Heat Map of Approval Times\n Requests Not Waiting for ISO")
+##########################################################
+### End correlation plot for ISO No Wait
+##########################################################
 
 
 
