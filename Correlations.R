@@ -58,37 +58,38 @@ noTV <- approvalsQuestCoded[is.na(approvalsQuestCoded$TV.AT),]
 # this is getting used more, so going to serialize it to disk for other modules to access
 saveRDS(noTV, "data/noTV.rds")
 
+# prepare data set for correlation matrix
+# reduce the data through elimination of the columns with all NA
+# only keep relevant columns that contain approver durations
+ReducedTV <- noTV[, colSums(is.na(noTV))<nrow(noTV)]
+ReducedTVCol <- subset(ReducedTV, select = c(7:40))
+
+# Create subsets for Questions and NoQuestions
+# in an effort to separate these two dimensions cleanly
+Questions <- subset(ReducedTVCol, QCode == 1)
+NoQuestions <- subset(ReducedTVCol, QCode == 0)
+
+
 #################################################
 ### Working with correlation matrix
 #################################################
+
 # Original attempt uses a subset of the total dataframe, removing the columns that
 # have no place in the final correlation matrix.
 # Uses pairwise complete because of sparse nature of combinations,
 # and spearman for same reason.
+
 # Calculate the correlation matrix, then melt data and pass to appropriate correlogram
 corout <- cor(approvalsQuestCoded[,7:53], use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
 
-# Create subsets for Questions and NoQuestions
-# in an effort to separate these two dimensions cleanly
-Questions <- subset(noTV, QCode == 1)
-NoQuestions <- subset(noTV, QCode == 0)
-# subset removes rows that don't meet the second param as a test, so splitting into two subsets.
-### modified to only include those with questions (Qcode == 1) from noTV
-### Following is for building out an approval time factor correlation heatmap with QuestionsCoded
+#################################################################################
+### Following is for building a correlation heat map for questions = yes
+#################################################################################
 
-# now repeat the correlation matrix
-corout <- cor(Questions[,7:53], use = "pairwise.complete", method = "spearman")
-
-# but this method leaves all of the extra columns in and makes it hard to interpret.
-# therefore, need to reduce the data through elimination of the columns with all NA
-# that can not contribute to the correlation calculation.
-# start over with sets into correlation matrix.
-ReducedQuestions <- Questions[, colSums(is.na(Questions))<nrow(Questions)]
 # now proceed with corout, melt, etc.
-corout <- cor(ReducedQuestions, use = "pairwise.complete", method = "spearman")
+corout <- cor(Questions, use = "pairwise.complete", method = "spearman")
 corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
-
 
 #now order the result for plotting
 colcorsOrdered <- corout[order(corout$Correlations), ]
@@ -104,8 +105,40 @@ ggplot(colcorsOrdered) +
     labs(x=NULL, y=NULL) +
     ggtitle("Correlation Heat Map of Approval Times\n Requests with Questions")
 
+##########################################################
+### End correlation plot for questions = yes
+##########################################################
+
+#################################################################################
+### Following is for building a correlation heat map for questions = no
+#################################################################################
+
+# now proceed with corout, melt, etc.
+corout <- cor(NoQuestions, use = "pairwise.complete", method = "spearman")
+corout <- melt(data = corout, varnames = c("x", "y"), value.name = "Correlations")
+
+#now order the result for plotting
+colcorsOrdered <- corout[order(corout$Correlations), ]
+
+#now plot as a heat map
+ggplot(colcorsOrdered) +
+    aes(x=x, y=y) +
+    geom_tile(aes(fill=Correlations)) +
+    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
+                         limits=c(-1,1)) +
+    theme_minimal() +
+    labs(x=NULL, y=NULL) +
+    ggtitle("Correlation Heat Map of Approval Times\n Requests with No Questions")
 
 ##########################################################
+### End correlation plot for questions = no
+##########################################################
+
+
+
+
+
 
 ### SSAT vs MaxDurationAT group by were there questions
 ggplot(approvalsQuestDF) +
