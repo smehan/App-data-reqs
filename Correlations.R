@@ -206,6 +206,12 @@ ggplot(colcorsOrdered) +
 ### End correlation plot for ISO No Wait
 ##########################################################
 
+###  create csv files for exporting
+write.csv(coroutQ, file = 'AppDataCorrelations-Questions.csv')
+write.csv(coroutNQ, file = 'AppDataCorrelations-NoQuestions.csv')
+write.csv(coroutIW, file = 'AppDataCorrelations-ISOWait.csv')
+write.csv(coroutINW, file = 'AppDataCorrelations-ISONoWait.csv')
+#####  End of csv creation
 
 
 ### SSAT vs MaxDurationAT group by were there questions
@@ -272,6 +278,6 @@ multiplot(p1, p2, p3, p4, cols = 2)
 ######  remove rows with 'na'
 CorOnly <- corout[!is.na(corout$Correlations),]
 ###  create csv file for exporting
-write.csv(CorOnly, file = 'AppDataCorrelations-Questions.csv')
+write.csv(CorOnly, file = 'AppDataCorrelations-All.csv')
 #####  End of csv creation
 
