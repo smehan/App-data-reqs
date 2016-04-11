@@ -95,7 +95,10 @@ ISONoWait <- ISOonly$Diff[ISOonly$Diff > 2]
 
 ### T-test will compare the means of the two samples:  Waiting for ISO and Not Waiting for ISO
 ### Ho: Mean of Approvers Waiting for ISO = Mean of Approvers NOT Waiting for ISO
+### H1: Mean of Approvers Waiting for ISO < Mean of Approvers NOT Waiting for ISO
 
-t.test(ISOWait, ISONoWait, conf.level = 0.90)
+t.test(ISOWait, ISONoWait, alternative = 'less')
 
+#####  Combine ISONoWait and Questions to group all 'problem' requests
 
+rbind(ISONoWait)
