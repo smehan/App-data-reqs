@@ -124,9 +124,34 @@ ggplot(colcorsOrdered) +
     ggtitle("Correlation Heat Map of Approval Times\n Requests by Type")
 
 ##########################################################
-### End correlation plot
+### End correlation heatmap
 ##########################################################
 
+##########################################################
+# Multiple Regression Model 1 with all predictor variables
+##########################################################
 
-# Multiple Regression Model
+model1 <- lm(Duration.AT ~ Security + Complex + Modification + Population + ITS, noTVCoded)
 
+summary(model1)
+coef(model1)
+
+library(coefplot)
+coefplot(model1)
+
+#######  End Model 1
+
+##########################################################
+# Multiple Regression Model 2 with Security and Complex 
+#  predictor variables only
+##########################################################
+
+model2 <- lm(Duration.AT ~ Security + Complex, noTVCoded)
+
+summary(model2)
+coef(model2)
+
+library(coefplot)
+coefplot(model2)
+
+#######  End Model 2
