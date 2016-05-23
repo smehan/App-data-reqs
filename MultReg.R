@@ -5,10 +5,11 @@
 library(ggplot2)
 library(reshape2)
 library(dplyr)
+library(qcc)
 
 # Load in the data
 
-# Need to read in noTVCoded from disk
+#Need to read in noTVCoded from disk
 noTVCoded <- readRDS(file="data/noTVCoded.rds")
 
 # Box Plot Series
@@ -27,13 +28,15 @@ ggplot(noTVCoded) +
     geom_boxplot(notch = TRUE, fill = "palegreen4", na.rm = TRUE) +
     ggtitle("All Application Data Requests") +
     labs(x="Modification Type Request?",y="Duration Days") +
+    geom_hline(yintercept=14, color="red") +
     coord_flip()
 
 ggplot(noTVCoded) +
     aes(x = ITS, y = Duration.AT) +
-    geom_boxplot(notch = TRUE, fill = "coral3", na.rm = TRUE) +
+    geom_boxplot(notch = TRUE, fill = "lightskyblue1", na.rm = TRUE) +
     ggtitle("All Application Data Requests") +
     labs(x="ITS Type Request?",y="Duration Days") +
+    geom_hline(yintercept=14, color="red") +
     coord_flip()
 
 ggplot(noTVCoded) +
@@ -41,6 +44,7 @@ ggplot(noTVCoded) +
     geom_boxplot(notch = TRUE, fill = "darkorange", na.rm = TRUE) +
     ggtitle("All Application Data Requests") +
     labs(x="Complex Type Request?",y="Duration Days") +
+    geom_hline(yintercept=14, color="red") +
     coord_flip()
 
 ggplot(noTVCoded) +
@@ -48,6 +52,7 @@ ggplot(noTVCoded) +
     geom_boxplot(notch = TRUE, fill = "plum4", na.rm = TRUE) +
     ggtitle("All Application Data Requests") +
     labs(x="Population Type Request?",y="Duration Days") +
+    geom_hline(yintercept=14, color="red") +
     coord_flip()
 
 
@@ -116,16 +121,56 @@ colcorsOrdered <- corout[order(corout$Correlations), ]
 ggplot(colcorsOrdered) +
     aes(x=x, y=y) +
     geom_tile(aes(fill=Correlations)) +
-    scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
-                         guide=guide_colorbar(ticks = FALSE, barheight = 12),
-                         limits=c(-1,1)) +
+    ##scale_fill_gradient2(low=muted("red"), mid="white", high="steelblue",
+    scale_fill_gradient2(low = "red", mid = "white", high = "steelblue",
+        guide=guide_colorbar(ticks = FALSE, barheight = 12),
+        limits=c(-1,1)) +
     theme_minimal() +
     labs(x=NULL, y=NULL) +
     ggtitle("Correlation Heat Map of Approval Times\n Requests by Type")
 
+###  create csv file for exporting
+write.csv(colcorsOrdered, file = 'App Data Correlations by Type.csv')
+#####  End of csv creation
+
 ##########################################################
 ### End correlation heatmap
 ##########################################################
+
+#########################################################
+### 2-way interaction plots
+########################################################
+
+interaction.plot(noTVCoded$Security, noTVCoded$QCode, noTVCoded$Duration.AT,
+                 type='b', col=c("red","blue"), legend=F,
+                 lty=c(1,2), lwd=2, pch=c(18,24),
+                 xlab="Security and QCode Factors",
+                 ylab="Mean of Approval Duration",
+                 main="Interaction Plot")
+            legend("bottomright", c("Security","QCode"), bty="n",lty=c(1,2),
+                   lwd=2,pch=c(18,24), col=c("red","blue"), title="Legend Title", inset = .02)
+ 
+interaction.plot(noTVCoded$Security,noTVCoded$Complex, noTVCoded$Modification,
+                 noTVCoded$Population,noTVCoded$ITS, col=c("red","blue"), lty=1, lwd=2,
+                 trace.label = "Request Type", xlab="factors", ylab="Mean Duration")            
+                       
+interaction.plot(noTVCoded$Security, noTVCoded$Modification, noTVCoded$Duration.AT)
+interaction.plot(noTVCoded$Security, noTVCoded$Population, noTVCoded$Duration.AT)
+interaction.plot(noTVCoded$Security, noTVCoded$ITS, noTVCoded$Duration.AT)
+
+#########################################################
+### 2-way anova
+########################################################
+
+model1a <- lm(Duration.AT ~ Security + Complex + Modification + Population + ITS + 
+                  Security*Complex + Security*Modification + Security*Population + Security*ITS +
+                  Complex*Modification + Complex*Population + Complex*ITS +
+                  Modification*Population + Modification*ITS +
+                  Population*ITS,
+              noTVCoded)
+
+
+anova(model1a)
 
 ##########################################################
 # Multiple Regression Model 1 with all predictor variables
@@ -155,3 +200,39 @@ library(coefplot)
 coefplot(model2)
 
 #######  End Model 2
+
+#####  Set noTVCoded to only incude security requests
+SecOnly <- subset(CodesOnly, Security == 1)
+
+###  Get the mean for the entire population and for security requests only
+mean(CodesOnly$Duration.AT)
+mean(SecOnly$Duration.AT)
+
+### T-test will compare the means of the entire population of requests and
+### the mean of only security requests
+### Ho: Mean of entire population = Mean of security requests
+### H1: Mean of entire population <> Mean of security requests
+### Significance Level = .05
+
+# assumes variations between pools are different
+t.test(CodesOnly$Duration.AT ~ CodesOnly$Security) 
+
+### Create boxplot - security requests vs all requests
+boxplot(CodesOnly$Duration.AT ~ CodesOnly$Security, 
+        main = "Application Data Requests",
+        xlab = "Security Request - 0 = no and 1 = yes",
+        ylab = "Approval Cycle Time/Days",
+        col = "lightblue")
+
+var(CodesOnly$Duration.AT)
+var(CodesOnly$Duration.AT[CodesOnly$Security == 1], na.rm = TRUE)
+var(CodesOnly$Duration.AT[CodesOnly$Security == 0], na.rm = TRUE)
+
+##############################################
+## Create the xbar and r charts
+##############################################
+
+q <- qcc(SecOnly, type="R", nsigmas=3)
+q2 <- qcc(SecOnly, type="xbar", nsigmas=3)
+process.capability(q2, spec.limits=c(0,13.98297))
+
