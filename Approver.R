@@ -5,13 +5,11 @@
 ###########################################################
 library(qcc)
 library(ggplot2)
+library(lubridate)
 
 # First read in data set
 myData <- readRDS(file="data/App_Data_Reqs.rds")
 
-# if we need to identify and remove Key dups
-dups <- anyDuplicated(approverDF$Key)
-approverDF <- approverDF[-dups, ]
 
 # CONSTANT used to convert time deltas to days
 SECINDAY <- (60*60*24)
@@ -75,6 +73,9 @@ approverDF <- data.frame(Key = factor(myData$Key),
                  CCA.AT = as.integer(myData$Cassie.Carter.End - myData$Cassie.Carter.Start)/(SECINDAY),
                  DG.AT = as.integer(myData$Denise.Gibbons.End - myData$Denise.Gibbons.Start)/(SECINDAY))
 
+# if we need to identify and remove Key dups
+dups <- anyDuplicated(approverDF$Key)
+approverDF <- approverDF[-dups, ]
 
 start <- myData[990,51]
 if (is.na(start)){
