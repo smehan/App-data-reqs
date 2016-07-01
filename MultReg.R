@@ -234,5 +234,17 @@ var(CodesOnly$Duration.AT[CodesOnly$Security == 0], na.rm = TRUE)
 
 q <- qcc(SecOnly, type="R", nsigmas=3)
 q2 <- qcc(SecOnly, type="xbar", nsigmas=3)
-process.capability(q2, spec.limits=c(0,13.98297))
+###process.capability(q2, spec.limits=c(0,13.98297))
+process.capability(q2, spec.limits=c(-6.432969,13.98297))
 
+# Take the column of durations as a data frame. N samples with with 1 measurement each
+# Now run an ImR as an individuals chart (xbar.one) against each 1 size sample
+q2 <- qcc(CodesOnly$Duration.AT, type="xbar.one", nsigmas=3)
+# Now run a process capability on the ImR data object
+process.capability(q2, spec.limits=c(-27.67967,57.05846))
+
+# try the same thing with NoTV
+q2 <- qcc(noTVCoded$Duration.AT, type="xbar.one", nsigmas=3)
+# Now run a process capability on the ImR data object
+# With UCL moved to 0 to remove non-physical measurements
+process.capability(q2, spec.limits=c(-27.67967,57.05846))
