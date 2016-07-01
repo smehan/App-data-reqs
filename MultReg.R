@@ -248,3 +248,11 @@ q2 <- qcc(noTVCoded$Duration.AT, type="xbar.one", nsigmas=3)
 # Now run a process capability on the ImR data object
 # With UCL moved to 0 to remove non-physical measurements
 process.capability(q2, spec.limits=c(-27.67967,57.05846))
+
+### Create histogram 
+ggplot(noTVCoded) +
+    aes(Duration.AT) +
+       geom_histogram(fill="darkblue") +
+    ggtitle("Histogram Plot Application Data Requests") +
+    labs(x="Duration", y="Count")
+
