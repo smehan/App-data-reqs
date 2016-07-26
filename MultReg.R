@@ -256,3 +256,24 @@ ggplot(noTVCoded) +
     ggtitle("Histogram Plot Application Data Requests") +
     labs(x="Duration", y="Count")
 
+########################################################################
+### Plot the Requests and Color the Data Points Based on Questions y/n
+########################################################################
+
+ggplot(noTVCoded) +
+    aes(x=Key, y=Duration.AT) +
+    ##geom_point(aes(color=factor(noTV$QCode))) +
+    geom_hline(yintercept=mean(noTVCoded$Duration.AT), color="red") +
+    geom_hline(yintercept=mean(noTVCoded$Duration.AT)+2.66*sd(noTVCoded$Duration.AT), linetype=2, color="Navy Blue") +
+    geom_hline(yintercept=mean(noTVCoded$Duration.AT)-2.66*sd(noTVCoded$Duration.AT), linetype=2, color="Navy Blue") +
+    theme_stata() +
+    ggtitle("Max Durations - Questions/No Questions") +
+    ###    labs(x="Requests", y="Max Duration (days)") +http://127.0.0.1:28569/graphics/plot_zoom_png?width=921&height=643
+    labs(x="Requests", y="Max Duration (days)") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    theme(strip.text.x = element_text(colour = "red", angle = 45, size = 10, hjust = 0.5, vjust = 0.5)) +
+    theme(axis.title.y = element_text(vjust=1.0)) +
+    theme(axis.title.x = element_text(vjust=-0.1)) +
+    theme(plot.title = element_text(size=20, face="bold", vjust=2))
+
+
